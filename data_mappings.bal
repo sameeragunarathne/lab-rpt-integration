@@ -12,7 +12,7 @@ isolated function mapLabReportToDiagnosticReport(LabReport labReport) returns la
         ]
     },
     subject: {
-        reference: string`Patient/${labReport.patient_id}`,
+        reference: string `Patient/${labReport.patient_id}`,
         display: labReport.patient_name
     },
     status: labReport.report_status != () ? <string>labReport.report_status : "unknown",
@@ -36,4 +36,33 @@ isolated function mapLabReportToDiagnosticReport(LabReport labReport) returns la
         }
     ],
     id: labReport.id.toString()
+};
+
+isolated function mapSubjectToPatient(Subject subject) returns labreport_eu:PatientEuLab => {
+
+    name: [
+        {
+            text: subject.name
+        }
+    ],
+    birthDate: subject.birth_date != () ? <string>subject.birth_date : "",
+    id: subject.patient_id.toString(),
+    identifier: [
+        {
+            value: subject.patient_id
+
+        }
+    ],
+    gender: subject.gender,
+    address: [
+        {
+            text: subject.address
+        }
+    ],
+    telecom: [
+        {
+            value: subject.phone,
+            use: "mobile"
+        }
+    ]
 };

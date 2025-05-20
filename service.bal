@@ -39,7 +39,14 @@ service / on new fhirr4:Listener(9090, patientApiConfig) {
 
     // Read the current state of single resource based on its id.
     isolated resource function get fhir/r4/Patient/[string id] (r4:FHIRContext fhirContext) returns Patient|r4:OperationOutcome|r4:FHIRError {
-        return r4:createFHIRError("Not implemented", r4:ERROR, r4:INFORMATIONAL, httpStatusCode = http:STATUS_NOT_IMPLEMENTED);
+        // Check if the patient ID is provided
+        Subject|error sub = getSubjectByPatientId(id);
+        if sub is error {
+            // Handle the error case
+            return r4:createFHIRError("Patient not found", r4:ERROR, r4:INFORMATIONAL, httpStatusCode = http:STATUS_NOT_FOUND);
+        }
+        labreport_eu:PatientEuLab mapSubjectToPatientResult = mapSubjectToPatient(sub);
+        return mapSubjectToPatientResult;
     }
 
     // Read the state of a specific version of a resource based on its id.
@@ -49,7 +56,32 @@ service / on new fhirr4:Listener(9090, patientApiConfig) {
 
     // Search for resources based on a set of criteria.
     isolated resource function get fhir/r4/Patient (r4:FHIRContext fhirContext) returns r4:Bundle|r4:OperationOutcome|r4:FHIRError {
-        return r4:createFHIRError("Not implemented", r4:ERROR, r4:INFORMATIONAL, httpStatusCode = http:STATUS_NOT_IMPLEMENTED);
+        if fhirContext.getRequestSearchParameters().hasKey("_id") {
+            // Call the database function to get the lab reports by patient ID
+            Subject|error sub = getSubjectByPatientId(fhirContext.getRequestSearchParameters().get("_id")[0].value);
+            if sub is error {
+                // Handle the error case
+                return r4:createFHIRError("Patient not found", r4:ERROR, r4:INFORMATIONAL, httpStatusCode = http:STATUS_NOT_FOUND);
+            }
+            labreport_eu:PatientEuLab mapSubjectToPatientResult = mapSubjectToPatient(sub);
+            r4:BundleEntry entry = {'resource: mapSubjectToPatientResult};
+            r4:Bundle bundle = {resourceType: "Bundle", 'type: "searchset", total: 1, entry: [entry]};
+            return bundle;
+        } else {
+            Subject[]|error sub = getAllSubjects();
+            if sub is error {
+                // Handle the error case
+                return r4:createFHIRError("Patient not found", r4:ERROR, r4:INFORMATIONAL, httpStatusCode = http:STATUS_NOT_FOUND);
+            }
+            r4:BundleEntry[] entries = [];
+            r4:Bundle bundle = {resourceType: "Bundle", 'type: "searchset", total: sub.length(), entry: entries};
+            foreach Subject subject in sub {
+                labreport_eu:PatientEuLab mapSubjectToPatientResult = mapSubjectToPatient(subject);
+                r4:BundleEntry entry = {'resource: mapSubjectToPatientResult};
+                entries.push(entry);
+            }
+            return bundle;
+        }
     }
 
     // Create a new resource.

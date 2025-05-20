@@ -62,3 +62,22 @@ type LabReport record {|
     Authenticator[] authenticators?;
     Order[] orders?;
 |};
+
+# Represents a subject/patient record from the database
+#
+# + id - subject ID 
+# + patient_id - unique identifier for the patient
+# + name - patient name 
+# + birth_date - patient birth date 
+# + gender - gender of the patient
+# + address - address of the patient
+# + phone - phone number of the patient
+public type Subject record {|
+    int id;
+    string patient_id;
+    string name?;
+    string birth_date?;
+    string gender?;
+    string address?;
+    string phone?;
+|};
