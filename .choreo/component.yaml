@@ -3,7 +3,7 @@ endpoints:
     - name: international401-patient-api
       displayName: international401 Patient API
       service:
-        basePath: /Patient
+        basePath: /
         port: 9090
       type: REST
       networkVisibilities:
@@ -13,7 +13,7 @@ endpoints:
     - name: international401-diagnosticreport-api
       displayName: international401 DiagnosticReport API
       service:
-        basePath: /DiagnosticReport
+        basePath: /
         port: 9091
       type: REST
       networkVisibilities:
