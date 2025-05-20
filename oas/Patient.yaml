@@ -13,7 +13,7 @@ tags:
 - name: Patient
 - name: 4.0.1
 paths:
-  /r4/Patient:
+  /:
     get:
       tags:
       - GET
@@ -282,7 +282,7 @@ paths:
       security:
       - default: []
       x-auth-type: Application & Application User
-  /r4/Patient/{id}:
+  /{id}:
     get:
       tags:
       - GET
