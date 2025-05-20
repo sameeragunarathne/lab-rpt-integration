@@ -17,7 +17,7 @@ tags:
 - name: DiagnosticReport
 - name: 4.0.1
 paths:
-  /:
+  /r4/DiagnosticReport:
     get:
       tags:
       - GET
@@ -272,7 +272,7 @@ paths:
       security:
       - default: []
       x-auth-type: Application & Application User
-  /{id}:
+  /r4/DiagnosticReport/{id}:
     get:
       tags:
       - GET
