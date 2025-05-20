@@ -22,14 +22,14 @@
 import ballerina/http;
 import ballerinax/health.fhir.r4;
 import ballerinax/health.fhirr4;
-import wso2healthcare/health.fhir.r4.labreport_eu;
+import ballerinax/health.fhir.r4.international401;
 
 # Generic type to wrap all implemented profiles.
 # Add required profile types here.
 # public type Patient r4:Patient|<other_Patient_Profile>;
-public type Patient labreport_eu:PatientEuLab;
+public type Patient international401:Patient;
 
-public type DiagnosticReport labreport_eu:DiagnosticReportLabEu;
+public type DiagnosticReport international401:DiagnosticReport;
 
 # initialize source system endpoint here
 
@@ -45,7 +45,7 @@ service / on new fhirr4:Listener(9090, patientApiConfig) {
             // Handle the error case
             return r4:createFHIRError("Patient not found", r4:ERROR, r4:INFORMATIONAL, httpStatusCode = http:STATUS_NOT_FOUND);
         }
-        labreport_eu:PatientEuLab mapSubjectToPatientResult = mapSubjectToPatient(sub);
+        international401:Patient mapSubjectToPatientResult = mapSubjectToPatient(sub);
         return mapSubjectToPatientResult;
     }
 
@@ -63,7 +63,7 @@ service / on new fhirr4:Listener(9090, patientApiConfig) {
                 // Handle the error case
                 return r4:createFHIRError("Patient not found", r4:ERROR, r4:INFORMATIONAL, httpStatusCode = http:STATUS_NOT_FOUND);
             }
-            labreport_eu:PatientEuLab mapSubjectToPatientResult = mapSubjectToPatient(sub);
+            international401:Patient mapSubjectToPatientResult = mapSubjectToPatient(sub);
             r4:BundleEntry entry = {'resource: mapSubjectToPatientResult};
             r4:Bundle bundle = {resourceType: "Bundle", 'type: "searchset", total: 1, entry: [entry]};
             return bundle;
@@ -76,7 +76,7 @@ service / on new fhirr4:Listener(9090, patientApiConfig) {
             r4:BundleEntry[] entries = [];
             r4:Bundle bundle = {resourceType: "Bundle", 'type: "searchset", total: sub.length(), entry: entries};
             foreach Subject subject in sub {
-                labreport_eu:PatientEuLab mapSubjectToPatientResult = mapSubjectToPatient(subject);
+                international401:Patient mapSubjectToPatientResult = mapSubjectToPatient(subject);
                 r4:BundleEntry entry = {'resource: mapSubjectToPatientResult};
                 entries.push(entry);
             }

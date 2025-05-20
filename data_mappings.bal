@@ -1,6 +1,6 @@
-import wso2healthcare/health.fhir.r4.labreport_eu;
+import ballerinax/health.fhir.r4.international401;
 
-isolated function mapLabReportToDiagnosticReport(LabReport labReport) returns labreport_eu:DiagnosticReportLabEu => {
+isolated function mapLabReportToDiagnosticReport(LabReport labReport) returns international401:DiagnosticReport => {
     extension: [],
     code: {
         coding: [
@@ -15,7 +15,7 @@ isolated function mapLabReportToDiagnosticReport(LabReport labReport) returns la
         reference: string `Patient/${labReport.patient_id}`,
         display: labReport.patient_name
     },
-    status: labReport.report_status != () ? <string>labReport.report_status : "unknown",
+    status: labReport.report_status != () ? <international401:DiagnosticReportStatus>labReport.report_status : "preliminary",
     basedOn: [
         {
             display: labReport.insurance_name
@@ -38,7 +38,7 @@ isolated function mapLabReportToDiagnosticReport(LabReport labReport) returns la
     id: labReport.id.toString()
 };
 
-isolated function mapSubjectToPatient(Subject subject) returns labreport_eu:PatientEuLab => {
+isolated function mapSubjectToPatient(Subject subject) returns international401:Patient => {
 
     name: [
         {
@@ -53,7 +53,6 @@ isolated function mapSubjectToPatient(Subject subject) returns labreport_eu:Pati
 
         }
     ],
-    gender: subject.gender,
     address: [
         {
             text: subject.address
